@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+
+	<title>Phoenix TypeScript - Nov 2018</title>
+
+	<meta name="description" content="">
+	<meta name="author" content="Paul Shannon">
+
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+
+	<meta name="viewport"
+		  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+	<link rel="stylesheet" href="node_modules/reveal.js/css/reveal.css">
+	<link rel="stylesheet" href="node_modules/reveal.js/css/theme/sky.css" id="theme">
+
+	<!-- Code syntax highlighting -->
+	<link rel="stylesheet" href="node_modules/reveal.js/lib/css/zenburn.css">
+	<link rel="stylesheet" href="resources/main.css">
+
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico"/>
+
+	<!-- Printing and PDF exports -->
+	<script>
+		var link = document.createElement('link');
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = window.location.search.match(/print-pdf/gi) ? 'node_modules/reveal.js/css/print/pdf.css' : 'node_modules/reveal.js/css/print/paper.css';
+		document.getElementsByTagName('head')[0].appendChild(link);
+	</script>
+</head>
+
+<body>
+
+<div class="reveal">
+	<!-- Any section element inside of this container is displayed as a slide -->
+	<div class="slides">
+		<section>
+			<img src="./assets/images/phx_ts.svg" class="removeFormatting titleImage">
+			<h2>@phxtypescript</h2>
+			<p>Meetup, November 13th, 2018</p>
+		</section>
+
+		<section>
+			<h2>Agenda</h2>
+
+			<ul>
+				<li>Dinner</li>
+				<li>PHX TS and TypeScript News</li>
+				<li>What's new in TS 3.1 and 3.2</li>
+				<li>WebAudio and Web Animations</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>Sponsors</h2>
+
+			<div class="two-column">
+				<div><img src="./assets/images/sitepen.png" class="removeFormatting supporters sitepenLogo"></div>
+				<div><img src="./assets/images/drivetime.png" class="removeFormatting supporters"></div>
+			</div>
+			<aside class="notes">
+				Both SitePen and DriveTime are hiring
+			</aside>
+		</section>
+
+		<section>
+			<h2>Hello!</h2>
+
+			<div class="two-column">
+				<div>
+					<h3>Paul Shannon</h3>
+					<img src="assets/images/sitepen.png" class="removeFormatting">
+				</div>
+				<div>
+					<ul>
+						<li>Sr Engineer @ SitePen</li>
+						<li>Talkscript Podcast</li>
+						<li>Phoenix TypeScript</li>
+						<li>Committer: Dojo, Intern</li>
+						<li class="github no-style"><a href="https://github.com/devpaul">devpaul</a></li>
+						<li class="twitter no-style"><a href="https://twitter.com/developerPaul">@developerPaul</a></li>
+					</ul>
+				</div>
+			</div>
+		</section>
+
+		<section>
+			<h2>TypeScript News</h2>
+
+			<ul>
+				<li>Vue 3 rewritten in TypeScript</li>
+				<li>create-react-app support for TypeScript</li>
+				<li>NativeScript 5 release</li>
+				<li>Angular 7 release</li>
+				<li>Dojo 4 release</li>
+				<li>Babel 7 @babel/preset-typescript</li>
+			</ul>
+		</section>
+
+		<section>
+			<h1>Typescript 3.1</h1>
+			<h3>Late Sept 2018</h3>
+		</section>
+
+		<section>
+			<h2>Mappable tuple and array types</h2>
+
+			<pre><code data-trim data-noescape>
+				type MapToPromise&lt;T> = { [K in keyof T]: Promise&lt;T[K]> };
+
+				type Coordinate = [number, number]
+
+				type PromiseCoordinate = MapToPromise&lt;Coordinate>; // [Promise&lt;number>, Promise&lt;number>]
+			</code></pre>
+		</section>
+
+		<section>
+			<h2>Property declarations on functions</h2>
+
+			<pre><code data-trim data-noescape>
+				function readImage(path: string, callback: (err: any, image: Image) => void) {
+					// ...
+				}
+
+				readImage.sync = (path: string) => {
+					const contents = fs.readFileSync(path);
+					return decodeImageSync(contents);
+				}
+			</code></pre>
+		</section>
+
+		<section>
+			<h1>TypeScript 3.2</h1>
+			<h3>Late Nov 2018</h3>
+		</section>
+
+		<section>
+			<h2>Strict bind, call, and apply</h2>
+
+			<ul class="fragment">
+				<li>Chipping away at variadic kinds</li>
+				<li>Typing challenges around higher-order functions</li>
+				<li class="fragment">Adds a --strictBindCallApply flag</li>
+			</ul>
+
+			<pre class="fragment"><code data-trim data-noescape>
+				let f00 = foo.bind(undefined);  // (a: number, b: string) => string
+				let f01 = foo.bind(undefined, 10);  // (b: string) => string
+				let f02 = foo.bind(undefined, 10, "hello");  // () => string
+			</code></pre>
+			<aside class="notes">
+				<a href="https://github.com/Microsoft/TypeScript/pull/27028">Issue</a>
+			</aside>
+		</section>
+
+		<section>
+			<h2>BigInt</h2>
+
+			<ul>
+				<li>TS39 BigInt support for 64-bit numbers</li>
+				<li>Loosely equal to Number</li>
+				<li>We need 64-bit numbers because of WebAssembly</li>
+			</ul>
+
+			<aside class="notes">
+				<a href="https://github.com/tc39/proposal-bigint">proposal</a>
+			</aside>
+		</section>
+
+		<section>
+			<h2>Allow non-unit types in union discriminants</h2>
+
+			<pre><code data-trim data-noescape>
+				type Result&lt;T> = { error?: undefined, value: T } | { error: Error };
+
+				function test(x: Result&lt;number>) {
+					if (!x.error) {
+						x.value;  // number (used to be error)
+					}
+					else {
+						x.error.message;  // string
+					}
+				}
+
+				test({ value: 10 });
+				test({ error: new Error("boom") });
+			</code></pre>
+
+			<aside class="notes">
+				<a href="https://github.com/Microsoft/TypeScript/pull/27695">PR</a>
+
+				Now TS 3.2 will inspect the non-unit type in the second union type
+			</aside>
+		</section>
+
+		<section>
+			<h2>Generic spread expressions in object literals</h2>
+
+			<pre><code data-trim data-noescape>
+				function taggedObject&lt;T, U extends string>(obj: T, tag: U) {
+					return { ...obj, tag };  // T & { tag: U }
+				}
+
+				let x = taggedObject({ x: 10, y: 20 }, "point");  // { x: number, y: number } & { tag: "point" }
+			</code></pre>
+
+			<aside class="notes">
+				<a href="https://github.com/Microsoft/TypeScript/pull/28234">PR</a>
+			</aside>
+		</section>
+
+		<section>
+			<p>Non-generic spreads are merged as much as possible</p>
+
+			<pre><code data-trim data-noescape>
+				function foo1&lt;T&gt;(t: T, obj1: { a: string }, obj2: { b: string }) {
+					// { a: string, x: number } & T & { b: string, y: number }
+					return { ...obj1, x: 1, ...t, ...obj2, y: 2 };
+				}
+			</code> </pre>
+		</section>
+
+		<section>
+			<p>Non-generic spread expressions continue to be processed as before</p>
+
+			<ul>
+				<li class="fragment">Call and construct signatures are stripped</li>
+				<li class="fragment">only non-method properties are preserved</li>
+				<li class="fragment">for properties with the same name, the type of the rightmost property is used</li>
+			</ul>
+
+			<p class="fragment">(!) This differs from intersection types</p>
+		</section>
+
+		<section>
+			<h2>Generic object rest variables and parameters</h2>
+
+			<pre><code data-trim data-noescape>
+				function excludeTag&lt;T extends { tag: string }>(obj: T) {
+					let { tag, ...rest } = obj;
+					return rest;  // Pick&lt;T, Exclude&lt;keyof T, "tag">>
+				}
+
+				const taggedPoint = { x: 10, y: 20, tag: "point" };
+				const point = excludeTag(taggedPoint);  // { x: number, y: number }
+			</code></pre>
+
+			<aside class="notes">
+				<a href="https://github.com/Microsoft/TypeScript/pull/28312">PR</a>
+			</aside>
+		</section>
+
+		<section>
+			<h2>Other improvements</h2>
+
+			<ul>
+				<li class="fragment"><a href="https://github.com/Microsoft/TypeScript/pull/27348">tsconfig `extends` now use node resolution</a></li>
+				<li class="fragment"><a href="https://github.com/Microsoft/TypeScript/pull/27208">recognizing Object.defineProperty calls</a></li>
+				<li class="fragment"><a href="https://github.com/Microsoft/TypeScript/pull/27353">--showConfig flag for debugging configs</a></li>
+			</ul>
+		</section>
+
+		<section>
+			<h1>TypeScript 3.3</h1>
+			<h3>Late Jan 2019</h3>
+		</section>
+
+		<section>
+			<h2>Implement partial type arguments</h2>
+
+			<pre><code data-trim data-noescape>
+				class Foo&lt;T, U> {
+					constructor(value1: T, value2: U) { }
+				}
+
+				const instance = new Foo&lt;_, string>(0, "");
+			</code></pre>
+
+			<aside class="notes">
+				<a href="https://github.com/Microsoft/TypeScript/pull/26349">PR</a>
+			</aside>
+		</section>
+
+		<section>
+			<h1>Dogs vs Cats</h1>
+		</section>
+
+		<section>
+			<h2>The eternal battle</h2>
+
+			<ul>
+				<li class="fragment">Tabs vs Spaces</li>
+				<li class="fragment">ASI or ;</li>
+				<li class="fragment">Vi or Emacs</li>
+				<li class="fragment">OOP or Functional</li>
+				<li class="fragment">Typed or Untyped</li>
+				<li class="fragment">Roll your own or Framework</li>
+			</ul>
+		</section>
+
+		<section>
+			<blockquote>The real question is should we use dog or cat gifs
+				for our comments?</blockquote>
+		</section>
+
+		<section>
+			<h2>How do we decide?</h2>
+		</section>
+
+		<section>
+			<h3>We built an app</h3>
+
+			<ul class="fragment">
+				<li>Web Audio</li>
+				<li>Web Animations</li>
+				<li>Modern Standards</li>
+				<li>Dojo Framework</li>
+				<li>Reactive architecture</li>
+				<li>NestJS backend</li>
+				<li>now deployment</li>
+			</ul>
+		</section>
+
+		<section>
+			<h2>WebAudio</h2>
+		</section>
+
+		<section>
+			<h2>Web Animations</h2>
+		</section>
+
+		<section>
+			<h2>Vote NOW!</h2>
+
+			<p><a href="https://catsvsdogs.now.sh">https://catsvsdogs.now.sh</a></p>
+		</section>
+
+		<section>
+			<h2><a href="https://catsvsdogs.now.sh#results">And the winner is....</a></h2>
+		</section>
+
+		<section>
+			<h2>Thanks!</h2>
+
+			<div class="two-column">
+				<div>
+					<h3>Paul Shannon</h3>
+					<img src="assets/images/sitepen.png" class="removeFormatting">
+				</div>
+				<div>
+					<ul>
+						<li>Sr Engineer @ SitePen</li>
+						<li>Talkscript Podcast</li>
+						<li>Phoenix TypeScript</li>
+						<li>Committer: Dojo, Intern</li>
+						<li class="github no-style"><a href="https://github.com/devpaul">devpaul</a></li>
+						<li class="twitter no-style"><a href="https://twitter.com/developerPaul">@developerPaul</a></li>
+					</ul>
+				</div>
+			</div>
+		</section>
+	</div>
+</div>
+
+<script src="node_modules/reveal.js/lib/js/head.min.js"></script>
+<script src="node_modules/reveal.js/js/reveal.js"></script>
+<script src="src/index.js"></script>
+
+</body>
+</html>
