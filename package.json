@@ -16,7 +16,7 @@
     "@types/rimraf": "^2.0.2",
     "@types/stylus": "^0.48.30",
     "cpy": "^7.0.1",
-    "gh-pages": "^1.2.0",
+    "gh-pages": "^2.0.1",
     "rimraf": "^2.6.2",
     "stylus": "^0.54.5",
     "ts-node": "^7.0.1",
